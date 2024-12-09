@@ -1,44 +1,113 @@
 package com.pham.doconnect.patients.service;
 
 
+import com.pham.doconnect.patients.dto.PatientsDTO;
 import com.pham.doconnect.patients.error.ResourceNotFoundException;
 import com.pham.doconnect.patients.model.Patients;
 import com.pham.doconnect.patients.repository.PatientsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class PatientsService {
     private final PatientsRepository patientsRepository;
+    private static final Logger logger = LoggerFactory.getLogger(PatientsService.class);
 
     @Autowired
     public PatientsService(PatientsRepository patientsRepository) {
         this.patientsRepository = patientsRepository;
     }
 
-    public List<Patients> getAllPatients() {
-        return patientsRepository.findAll();
+    public List<PatientsDTO> getAllPatients() {
+        logger.info("Getting all Patients");
+        List<Patients> allPatients =  patientsRepository.findAll();
+        if (allPatients.isEmpty()) {
+            logger.warn("No Patients found");
+        } else {
+            logger.info("Found {} Patients", allPatients.size());
+        }
+        return allPatients.stream().map(this::toDTO).toList();
     }
 
-    public Patients getPatientById(Long id) {
-        return patientsRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
+    public PatientsDTO getPatientById(Long id) {
+        logger.info("Getting Patient by ID {}", id);
+        Patients patient = patientsRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.warn("Patient with ID {} not found", id);
+                    return new ResourceNotFoundException("Patient not found or been deleted");
+                });
+        return toDTO(patient);
     }
 
-    public Patients savePatient(Patients patient) {
-        return patientsRepository.save(patient);
+    public PatientsDTO savePatients(PatientsDTO patientsDTO) {
+        Patients entity = toEntity(patientsDTO);
+        logger.info("Saving Patient {}", entity);
+        Patients saved = patientsRepository.save(entity);
+        if (patientsRepository.existsByEmail(saved.getEmail())) {
+            logger.warn("Patient with email {} already exists", saved.getEmail());
+            throw new IllegalArgumentException("Patient already exists");
+        }
+        logger.info("Patient {} has been saved successfully", saved);
+        return toDTO(saved);
     }
 
     public void deletePatient(Long id) {
-        if (patientsRepository.existsById(id)) {
-            patientsRepository.deleteById(id);
-        } else {
-            throw new ResourceNotFoundException("Patient not found");
-        }
+        logger.info("Deleting Patient with ID {}", id);
+        Patients patient = patientsRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.warn("Patient with ID {} not found or has been deleted", id);
+                    return new ResourceNotFoundException("Patient not found or been deleted");
+                });
+        patientsRepository.delete(patient);
+        logger.info("Patient with ID {} has been deleted successfully", id);
+    }
 
+    public PatientsDTO updatePatient(Long id, PatientsDTO dto) {
+        logger.info("Updating Patient with ID {}", id);
+        Patients existingPatients = patientsRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.warn("No Patient with ID {} is found", id);
+                    return new ResourceNotFoundException("Patient not found");
+                });
+        if (dto.getAge() < 0 && dto.getAge() > 200) {
+            logger.warn("Age not valid");
+            throw new IllegalArgumentException("Please enter a valid age");
+        }
+        existingPatients.setAge(dto.getAge());
+        existingPatients.setFirstName(dto.getFname());
+        existingPatients.setLastName(dto.getLname());
+        existingPatients.setEmail(dto.getEmail());
+        Patients updated = patientsRepository.save(existingPatients);
+        return toDTO(updated);
+    }
+
+    private Patients toEntity(PatientsDTO patientsDTO) {
+        logger.debug("Converting {} to entity", patientsDTO);
+        Patients entity = new Patients();
+        entity.setFirstName(patientsDTO.getFname());
+        entity.setLastName(patientsDTO.getLname());
+        entity.setAge(patientsDTO.getAge());
+        entity.setEmail(patientsDTO.getEmail());
+        entity.setPassword(patientsDTO.getPassword());
+        logger.debug("{} is converted to entity", entity);
+        return entity;
+    }
+
+    private PatientsDTO toDTO(Patients entity) {
+        logger.debug("Converting {} to DTO", entity);
+        PatientsDTO dto = new PatientsDTO();
+        dto.setFname(entity.getFirstName());
+        dto.setLname(entity.getLastName());
+        dto.setAge(entity.getAge());
+        dto.setEmail(entity.getEmail());
+        logger.debug("{} is converted to DTO", dto);
+        return dto;
     }
 
 }
