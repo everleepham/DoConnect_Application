@@ -1,5 +1,4 @@
 package com.pham.doconnect.patients.controller;
-
 import com.pham.doconnect.patients.dto.PatientsDTO;
 import com.pham.doconnect.patients.service.PatientsService;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -19,6 +19,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
+@AutoConfigureMockMvc
 public class PatientsControllerTest {
 
     @Autowired
@@ -45,6 +46,7 @@ public class PatientsControllerTest {
        patientsDTOList.add(patientDTO1);
        patientsDTOList.add(patientDTO2);
        patientsDTOList.add(patientDTO3);
+
     }
 
     @Test
@@ -84,10 +86,15 @@ public class PatientsControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("johndoe@gmail.com"));
     }
 
+    private static final String PATIENT_JSON = "{\"firstName\":\"Eve\", \"lastName\":\"Pham\", \"age\":19, \"email\":\"eve@gmail.com\"}";
+
+
     @Test
     public void testCreatePatient() throws Exception {
         when(patientsService.savePatients(patientDTO3)).thenReturn(patientDTO3);
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/patients"))
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/patients")
+                        .contentType("application/json")
+                        .content(PATIENT_JSON))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value("Eve"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("Pham"))
@@ -95,16 +102,23 @@ public class PatientsControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("eve@gmail.com"));
     }
 
+    private static final String UPDATE_JSON = "{\"firstName\":\"Mike\", \"lastName\":\"Doe\", \"age\":30, \"email\":\"mikedoe@gmail.com\"}";
+
+
     @Test
     public void testUpdatePatient() throws Exception {
+
         when(patientsService.updatePatient(1L, patientDTO1)).thenReturn(patientDTO1);
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/patients/1"))
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/patients/1")
+                        .contentType("application/json")
+                        .content(UPDATE_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value("John"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value("Mike"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("Doe"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.age").value(24))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("johndoe@gmail.com"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.age").value(30))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("mikedoe@gmail.com"));
     }
+
 
     @Test
     public void testDeletePatient() throws Exception {
@@ -112,7 +126,4 @@ public class PatientsControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/patients/1"))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
-
-
-
 }
