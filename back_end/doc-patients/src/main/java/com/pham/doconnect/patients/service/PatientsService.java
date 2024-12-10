@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -28,7 +27,7 @@ public class PatientsService {
         logger.info("Getting all Patients");
         List<Patients> allPatients =  patientsRepository.findAll();
         if (allPatients.isEmpty()) {
-            logger.warn("No Patients found");
+            logger.error("No Patients found");
         } else {
             logger.info("Found {} Patients", allPatients.size());
         }
@@ -48,11 +47,11 @@ public class PatientsService {
     public PatientsDTO savePatients(PatientsDTO patientsDTO) {
         Patients entity = toEntity(patientsDTO);
         logger.info("Saving Patient {}", entity);
-        Patients saved = patientsRepository.save(entity);
-        if (patientsRepository.existsByEmail(saved.getEmail())) {
-            logger.warn("Patient with email {} already exists", saved.getEmail());
+        if (patientsRepository.existsByEmail(entity.getEmail())) {
+            logger.warn("Patient with email {} already exists", entity.getEmail());
             throw new IllegalArgumentException("Patient already exists");
         }
+        Patients saved = patientsRepository.save(entity);
         logger.info("Patient {} has been saved successfully", saved);
         return toDTO(saved);
     }
@@ -61,7 +60,7 @@ public class PatientsService {
         logger.info("Deleting Patient with ID {}", id);
         Patients patient = patientsRepository.findById(id)
                 .orElseThrow(() -> {
-                    logger.warn("Patient with ID {} not found or has been deleted", id);
+                    logger.error("Patient with ID {} not found or has been deleted", id);
                     return new ResourceNotFoundException("Patient not found or been deleted");
                 });
         patientsRepository.delete(patient);
@@ -84,6 +83,7 @@ public class PatientsService {
         existingPatients.setLastName(dto.getLname());
         existingPatients.setEmail(dto.getEmail());
         Patients updated = patientsRepository.save(existingPatients);
+        logger.info("Patient with ID {} has been updated successfully", id);
         return toDTO(updated);
     }
 
