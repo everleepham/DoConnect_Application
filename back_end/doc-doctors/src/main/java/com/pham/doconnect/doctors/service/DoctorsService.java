@@ -56,8 +56,12 @@ public class DoctorsService {
         return toDTO(savedDoctor);
     }
 
-   public List<DoctorsDTO> searchDoctorsByName(String fname, String lname) {
-        List<Doctors> doctorsFound = doctorsRepository.findDoctorsByLnameOrFname(fname, lname);
+   public List<DoctorsDTO> searchDoctorsByName(String keyword) {
+       if (keyword == null) {
+           logger.warn("Keyword can not be null");
+           throw new IllegalArgumentException("First name or last name must be provided");
+       }
+        List<Doctors> doctorsFound = doctorsRepository.findByLnameContainingOrFnameContaining(keyword);
        if (doctorsFound.isEmpty()) {
            logger.info("No doctors with this name found");
        } else {

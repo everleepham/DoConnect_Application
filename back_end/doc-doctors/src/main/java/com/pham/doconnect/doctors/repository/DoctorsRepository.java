@@ -8,5 +8,5 @@ import java.util.List;
 public interface DoctorsRepository extends JpaRepository<Doctors, Long> {
     boolean existsByEmail(String email);
 
-    List<Doctors> findDoctorsByLnameOrFname(String lname, String fname);
+    List<Doctors> findByLnameContainingOrFnameContaining(String keyword);
 }

@@ -13,10 +13,21 @@ public class DoctorsDTO {
 
     @NotNull
     private Long id;
+
+    @NotNull(message = "First name required")
     private String fname;
+
+    @NotNull(message = "First name required")
     private String lname;
+
+    @NotNull(message = "Email required")
+    @Email(message = "Email should be valid")
     private String email;
+
+    @NotNull(message = "Specialize is required")
     private Specialize specialize;
+
+    @NotNull(message = "Status is required")
     private Boolean is_active;
 
     public DoctorsDTO() {

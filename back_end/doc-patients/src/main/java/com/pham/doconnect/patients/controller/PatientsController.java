@@ -2,7 +2,6 @@ package com.pham.doconnect.patients.controller;
 
 import com.pham.doconnect.patients.dto.PatientsDTO;
 import com.pham.doconnect.patients.service.PatientsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +14,8 @@ import java.util.List;
 @RequestMapping("/api/patients")
 public class PatientsController {
 
-    @Autowired
     private final PatientsService patientsService;
     private static final Logger logger = LoggerFactory.getLogger(PatientsController.class);
-
 
     public PatientsController(PatientsService patientsService) {
         this.patientsService = patientsService;
