@@ -1,6 +1,7 @@
 package com.pham.doconnect.appointments.model;
 
 public enum Services {
-    CABIN,
-    ONLINE
+    ONLINE,
+    IN_PERSON,
+    VIDEO_CONSULTATION
 }

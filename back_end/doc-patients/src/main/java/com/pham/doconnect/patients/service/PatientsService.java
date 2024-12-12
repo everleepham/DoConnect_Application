@@ -27,7 +27,7 @@ public class PatientsService {
         logger.info("Getting all Patients");
         List<Patients> allPatients =  patientsRepository.findAll();
         if (allPatients.isEmpty()) {
-            logger.error("No Patients found");
+            logger.warn("No Patients found");
         } else {
             logger.info("Found {} Patients", allPatients.size());
         }

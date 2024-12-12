@@ -27,6 +27,7 @@ public class Doctors {
     private String email;
 
     @NotNull(message = "Specialize is required")
+    @Enumerated(EnumType.STRING)
     private Specialize specialize;
 
     @NotNull(message = "Status is required")
