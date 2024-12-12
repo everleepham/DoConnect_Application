@@ -9,8 +9,8 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.pham.doconnect.services</groupId>
-    <artifactId>doc-services</artifactId>
+    <groupId>com.pham.doconnect.appointments</groupId>
+    <artifactId>doc-appointments</artifactId>
 
     <properties>
         <maven.compiler.source>22</maven.compiler.source>

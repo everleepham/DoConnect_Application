@@ -24,7 +24,7 @@
     <modules>
         <module>doc-patients</module>
 		<module>doc-doctors</module>
-		<module>doc-services</module>
+		<module>doc-appointments</module>
 	</modules>
     <scm>
 		<connection/>
