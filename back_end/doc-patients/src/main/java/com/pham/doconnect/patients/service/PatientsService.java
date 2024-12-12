@@ -71,11 +71,11 @@ public class PatientsService {
         logger.info("Updating Patient with ID {}", id);
         Patients existingPatients = patientsRepository.findById(id)
                 .orElseThrow(() -> {
-                    logger.warn("No Patient with ID {} is found", id);
+                    logger.error("No Patient with ID {} is found", id);
                     return new ResourceNotFoundException("Patient not found");
                 });
         if (dto.getAge() < 0 && dto.getAge() > 200) {
-            logger.warn("Age not valid");
+            logger.error("Age not valid");
             throw new IllegalArgumentException("Please enter a valid age");
         }
         existingPatients.setAge(dto.getAge());

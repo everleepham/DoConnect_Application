@@ -3,6 +3,8 @@ package com.pham.doconnect.appointments.dto;
 
 import com.pham.doconnect.appointments.model.Appointments;
 import com.pham.doconnect.appointments.model.Services;
+import com.pham.doconnect.doctors.model.Doctors;
+import com.pham.doconnect.patients.model.Patients;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,8 +34,8 @@ public class AppointmentsDTO {
 
     public AppointmentsDTO(Appointments appointments) {
         this.id = appointments.getId();
-        this.patientId = appointments.getPatientId();
-        this.doctorId = appointments.getDoctorId();
+        this.patientId = appointments.getPatient().getId();
+        this.doctorId = appointments.getDoctor().getId();
         this.service = appointments.getService();
         this.appointmentDate = appointments.getAppointmentDate();
     }
