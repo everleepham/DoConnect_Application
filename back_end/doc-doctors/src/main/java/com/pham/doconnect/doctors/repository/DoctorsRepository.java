@@ -9,4 +9,5 @@ public interface DoctorsRepository extends JpaRepository<Doctors, Long> {
     boolean existsByEmail(String email);
 
     List<Doctors> findByLnameContainingOrFnameContaining(String keyword);
+    List<Doctors> findBySpecialtyContaining(String specialty);
 }

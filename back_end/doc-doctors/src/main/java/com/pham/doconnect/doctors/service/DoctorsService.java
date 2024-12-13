@@ -4,6 +4,7 @@ package com.pham.doconnect.doctors.service;
 import com.pham.doconnect.doctors.dto.DoctorsDTO;
 import com.pham.doconnect.doctors.error.ResourceNotFoundException;
 import com.pham.doconnect.doctors.model.Doctors;
+import com.pham.doconnect.doctors.model.Specialize;
 import com.pham.doconnect.doctors.repository.DoctorsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,6 +69,20 @@ public class DoctorsService {
            logger.info("Found {} doctors with this name", doctorsFound.size());
        }
         return doctorsFound.stream().map(this::toDTO).collect(Collectors.toList());
+   }
+
+   public List<DoctorsDTO> searchDoctorBySpecialize(String specialize) {
+        if (specialize == null) {
+            logger.warn("Specialize can not be null");
+            throw new IllegalArgumentException("Specialize can not be null");
+        }
+        List<Doctors> doctorsFoundBySpe = doctorsRepository.findBySpecialtyContaining(specialize);
+        if (doctorsFoundBySpe.isEmpty()) {
+            logger.warn("No doctors with this specialize found");
+        } else {
+            logger.info("Found {} doctors with this specialize ", doctorsFoundBySpe.size());
+        }
+        return doctorsFoundBySpe.stream().map(this::toDTO).collect(Collectors.toList());
    }
 
     public DoctorsDTO updateDoctorStatus(Long id, DoctorsDTO doctorsDTO) {

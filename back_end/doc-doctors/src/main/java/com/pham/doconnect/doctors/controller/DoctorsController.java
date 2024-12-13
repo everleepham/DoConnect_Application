@@ -58,4 +58,10 @@ public class DoctorsController {
         return new ResponseEntity<>(listDoctors, HttpStatus.OK);
     }
 
+    @GetMapping("/search/{specialize}")
+    public ResponseEntity<List<DoctorsDTO>> searchDoctorsBySpecialize(@RequestParam String specialize) {
+        logger.info("Request received in controller to search doctors by specialize {}", specialize);
+        List<DoctorsDTO> listDoctors = doctorsService.searchDoctorBySpecialize(specialize);
+        return new ResponseEntity<>(listDoctors, HttpStatus.OK);
+    }
 }
