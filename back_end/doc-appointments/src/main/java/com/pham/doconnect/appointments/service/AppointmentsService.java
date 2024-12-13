@@ -15,6 +15,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -89,9 +92,60 @@ public class AppointmentsService {
     }
 
     // List apt per patient
+    public List<AppointmentsDTO> getAppointmentByPatient(Long patientId) {
+        logger.info("Getting appointment by patient {}", patientId);
+        if (patientId == null) {
+            logger.warn("Patient not found");
+        }
+        List<Appointments> appointmentsByPatient = appointmentsRepository.findByPatientId(patientId);
+        if (appointmentsByPatient == null || appointmentsByPatient.isEmpty()) {
+            logger.warn("No Appointments with this patient found");
+        } else {
+            logger.info("Found {} appointments of with this patient", appointmentsByPatient.size());
+        }
+        assert appointmentsByPatient != null;
+        return appointmentsByPatient.stream().map(this::toDTO).toList();
+    }
+
     // List apt per doctor
+    public List<AppointmentsDTO> getAppointmentByDoctor(Long doctorId) {
+        logger.info("Getting appointment by doctor {}", doctorId);
+        if (doctorId == null) {
+            logger.warn("Doctor not found");
+        }
+        List<Appointments> appointmentsByDoctor = appointmentsRepository.findByDoctorId(doctorId);
+        if (appointmentsByDoctor == null || appointmentsByDoctor.isEmpty()) {
+            logger.warn("No Appointments with this doctor found");
+        } else {
+            logger.info("Found {} appointments of with doctor", appointmentsByDoctor.size());
+        }
+        assert appointmentsByDoctor != null;
+        return appointmentsByDoctor.stream().map(this::toDTO).toList();
+    }
+
+    Date convertToDate(LocalDateTime appointmentDate) {
+        return java.util.Date
+                .from(appointmentDate.atZone(ZoneId.systemDefault())
+                        .toInstant());
+    }
+
     // Search apt by date
-    // Unit
+    public List<AppointmentsDTO> searchApptByDate(LocalDateTime date) {
+        logger.info("Searching appointment by date");
+        if (date == null) {
+            List<Appointments> appointmentsFound = appointmentsRepository.findAll();
+        }
+        assert date != null;
+        List<Appointments> appointmentsFound = appointmentsRepository.findAppointmentsByAppointmentDate(convertToDate(date));
+        if (appointmentsFound.isEmpty()) {
+            logger.warn("No Appointments found in {}", date);
+        } else {
+            logger.info("Found {} appointments in this date", appointmentsFound.size());
+        }
+        assert appointmentsFound != null;
+        return appointmentsFound.stream().map(this::toDTO).toList();
+    }
+
 
     private AppointmentsDTO toDTO(Appointments appointments) {
         logger.info("Converting appointments to DTO");

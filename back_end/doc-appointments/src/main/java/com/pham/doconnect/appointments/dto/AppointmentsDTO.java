@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -39,5 +41,12 @@ public class AppointmentsDTO {
         this.service = appointments.getService();
         this.appointmentDate = appointments.getAppointmentDate();
     }
+
+    Date dateConverted(LocalDateTime appointmentDate) {
+        return java.util.Date
+                .from(appointmentDate.atZone(ZoneId.systemDefault())
+                        .toInstant());
+    }
+
 
 }

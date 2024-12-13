@@ -63,7 +63,7 @@ public class DoctorsService {
        }
         List<Doctors> doctorsFound = doctorsRepository.findByLnameContainingOrFnameContaining(keyword);
        if (doctorsFound.isEmpty()) {
-           logger.info("No doctors with this name found");
+           logger.warn("No doctors with this name found");
        } else {
            logger.info("Found {} doctors with this name", doctorsFound.size());
        }
