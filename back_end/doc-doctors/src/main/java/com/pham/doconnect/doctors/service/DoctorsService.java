@@ -4,7 +4,6 @@ package com.pham.doconnect.doctors.service;
 import com.pham.doconnect.doctors.dto.DoctorsDTO;
 import com.pham.doconnect.doctors.error.ResourceNotFoundException;
 import com.pham.doconnect.doctors.model.Doctors;
-import com.pham.doconnect.doctors.model.Specialize;
 import com.pham.doconnect.doctors.repository.DoctorsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +31,9 @@ public class DoctorsService {
         } else {
             logger.info("Found {} doctors", allDoctors.size());
         }
-        return allDoctors.stream().map(this::toDTO).toList();
+        return allDoctors.stream()
+                .filter(Doctors::is_active)
+                .map(this::toDTO).toList();
     }
 
     public DoctorsDTO getDoctorById(Long id) {
@@ -58,7 +59,7 @@ public class DoctorsService {
     }
 
    public List<DoctorsDTO> searchDoctorsByName(String keyword) {
-       if (keyword == null) {
+       if (keyword == null || keyword.trim().isEmpty()) {
            logger.warn("Keyword can not be null");
            throw new IllegalArgumentException("First name or last name must be provided");
        }
@@ -98,15 +99,9 @@ public class DoctorsService {
     }
 
     private DoctorsDTO toDTO(Doctors entity) {
-        logger.info("Converting Doctors to DTO {}", entity);
-        DoctorsDTO dto = new DoctorsDTO();
-        dto.setId(entity.getId());
-        dto.setLname(entity.getLname());
-        dto.setEmail(entity.getEmail());
-        dto.setSpecialize(entity.getSpecialize());
-        dto.setIs_active(entity.is_active());
-        logger.info("Converted Doctors to DTO {}", dto);
-        return dto;
+        logger.info("Converting doctor {} to DTO", entity);
+        return new DoctorsDTO(entity.getId(), entity.getFname(), entity.getLname(),
+                entity.getEmail(), entity.getSpecialize(), entity.is_active());
     }
 
     private Doctors toEntity(DoctorsDTO dto) {

@@ -30,16 +30,17 @@ public class DoctorsDTO {
     @NotNull(message = "Status is required")
     private Boolean is_active;
 
+
+    public DoctorsDTO(Long id, String fname, String lname, String email, Specialize specialize, Boolean is_active) {
+        this.id = id;
+        this.fname = fname;
+        this.lname = lname;
+        this.email = email;
+        this.specialize = specialize;
+        this.is_active = is_active;
+    }
+
+
     public DoctorsDTO() {
     }
-
-    public DoctorsDTO(Doctors doctor) {
-        this.id = doctor.getId();
-        this.fname = doctor.getFname();
-        this.lname = doctor.getLname();
-        this.email = doctor.getEmail();
-        this.specialize = doctor.getSpecialize();
-        this.is_active = doctor.is_active();
-    }
-
 }

@@ -92,7 +92,6 @@ public class AppointmentsService {
         logger.info("Deleted appointment {}", id);
     }
 
-    // List apt per patient
     public List<AppointmentsDTO> getAppointmentByPatient(Long patientId) {
         logger.info("Getting appointment by patient {}", patientId);
         if (patientId == null) {
