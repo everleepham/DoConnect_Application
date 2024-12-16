@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -96,6 +97,7 @@ public class AppointmentsService {
         logger.info("Getting appointment by patient {}", patientId);
         if (patientId == null) {
             logger.warn("Patient not found");
+            throw new ResourceNotFoundException("No appointments found for the specified doctor");
         }
         List<Appointments> appointmentsByPatient = appointmentsRepository.findByPatientId(patientId);
         if (appointmentsByPatient == null || appointmentsByPatient.isEmpty()) {
@@ -112,6 +114,7 @@ public class AppointmentsService {
         logger.info("Getting appointment by doctor {}", doctorId);
         if (doctorId == null) {
             logger.warn("Doctor not found");
+            throw new ResourceNotFoundException("No appointments found for the specified patient");
         }
         List<Appointments> appointmentsByDoctor = appointmentsRepository.findByDoctorId(doctorId);
         if (appointmentsByDoctor == null || appointmentsByDoctor.isEmpty()) {
@@ -123,27 +126,26 @@ public class AppointmentsService {
         return appointmentsByDoctor.stream().map(this::toDTO).toList();
     }
 
-    Date convertToDate(LocalDateTime appointmentDate) {
-        return java.util.Date
-                .from(appointmentDate.atZone(ZoneId.systemDefault())
-                        .toInstant());
-    }
-
-    // Search apt by date
-    public List<AppointmentsDTO> searchApptByDate(LocalDateTime date) {
-        logger.info("Searching appointment by date");
+    public List<AppointmentsDTO> getAppointmentsByDate(LocalDate date) {
         if (date == null) {
-            List<Appointments> appointmentsFound = appointmentsRepository.findAll();
+            throw new IllegalArgumentException("Date cannot be null");
         }
-        assert date != null;
-        List<Appointments> appointmentsFound = appointmentsRepository.findAppointmentsByAppointmentDate(convertToDate(date));
-        if (appointmentsFound.isEmpty()) {
-            logger.warn("No Appointments found in {}", date);
-        } else {
-            logger.info("Found {} appointments in this date", appointmentsFound.size());
+
+        logger.info("Filtering appointments for date: {}", date);
+        List<Appointments> allAppointments = appointmentsRepository.findAll();
+
+        if (allAppointments.isEmpty()) {
+            logger.warn("No appointments found");
+            return List.of();
         }
-        assert appointmentsFound != null;
-        return appointmentsFound.stream().map(this::toDTO).toList();
+
+        List<AppointmentsDTO> filteredAppointments = allAppointments.stream()
+                .filter(appointment -> appointment.getAppointmentDate().toLocalDate().equals(date))
+                .map(this::toDTO)
+                .toList();
+
+        logger.info("Found {} appointments for date {}", filteredAppointments.size(), date);
+        return filteredAppointments;
     }
 
 

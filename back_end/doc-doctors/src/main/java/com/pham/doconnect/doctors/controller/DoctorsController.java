@@ -59,7 +59,7 @@ public class DoctorsController {
     }
 
     @GetMapping("/search/{specialize}")
-    public ResponseEntity<List<DoctorsDTO>> searchDoctorsBySpecialize(@RequestParam String specialize) {
+    public ResponseEntity<List<DoctorsDTO>> searchDoctorsBySpecialize(@RequestParam @PathVariable String specialize) {
         logger.info("Request received in controller to search doctors by specialize {}", specialize);
         List<DoctorsDTO> listDoctors = doctorsService.searchDoctorBySpecialize(specialize);
         return new ResponseEntity<>(listDoctors, HttpStatus.OK);
