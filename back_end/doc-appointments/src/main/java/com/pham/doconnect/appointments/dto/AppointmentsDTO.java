@@ -3,7 +3,6 @@ package com.pham.doconnect.appointments.dto;
 
 import com.pham.doconnect.appointments.model.Appointments;
 import com.pham.doconnect.appointments.model.Services;
-import com.pham.doconnect.doctors.model.Doctors;
 import com.pham.doconnect.patients.model.Patients;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

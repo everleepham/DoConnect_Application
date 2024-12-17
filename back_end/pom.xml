@@ -25,6 +25,7 @@
         <module>doc-patients</module>
 		<module>doc-doctors</module>
 		<module>doc-appointments</module>
+		<module>doc-core</module>
 	</modules>
     <scm>
 		<connection/>
@@ -33,7 +34,7 @@
 		<url/>
 	</scm>
 	<properties>
-		<java.version>21</java.version>
+		<java.version>22</java.version>
 	</properties>
 	<dependencies>
 		<dependency>

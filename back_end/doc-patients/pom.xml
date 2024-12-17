@@ -9,7 +9,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.pham.doconnect</groupId>
+    <groupId>com.pham.doconnect.patients</groupId>
     <artifactId>doc-patients</artifactId>
 
     <properties>

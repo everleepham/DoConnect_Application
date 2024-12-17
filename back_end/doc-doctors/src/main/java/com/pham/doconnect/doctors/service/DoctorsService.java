@@ -77,7 +77,7 @@ public class DoctorsService {
             logger.warn("Specialize can not be null");
             throw new IllegalArgumentException("Specialize can not be null");
         }
-        List<Doctors> doctorsFoundBySpe = doctorsRepository.findBySpecialtyContaining(specialize);
+        List<Doctors> doctorsFoundBySpe = doctorsRepository.findDoctorsBySpecializeContaining(specialize);
         if (doctorsFoundBySpe.isEmpty()) {
             logger.warn("No doctors with this specialize found");
         } else {

@@ -2,7 +2,6 @@ package com.pham.doconnect.appointments.controller;
 
 
 import com.pham.doconnect.appointments.dto.AppointmentsDTO;
-import com.pham.doconnect.appointments.model.Appointments;
 import com.pham.doconnect.appointments.service.AppointmentsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,11 +46,18 @@ public class AppointmentsController {
         return new ResponseEntity<>(savedAppointments, HttpStatus.CREATED);
     }
 
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAppointment(@PathVariable Long id) {
+        logger.info("Request received in controller to delete appointment");
+        appointmentsService.deleteAppointment(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<AppointmentsDTO> updateAppointment(@PathVariable("id") Long id, @RequestBody AppointmentsDTO appointmentsDTO) {
-        AppointmentsDTO updatedAppointments = appointmentsService.updateAppointment(id, appointmentsDTO);
+        AppointmentsDTO updatedAppointment = appointmentsService.updateAppointment(id, appointmentsDTO);
         logger.info("Request received in controller to update appointment date");
-        return new ResponseEntity<>(updatedAppointments, HttpStatus.OK);
+        return new ResponseEntity<>(updatedAppointment, HttpStatus.OK);
     }
 
     @GetMapping("/search/patients/{patient_id}")

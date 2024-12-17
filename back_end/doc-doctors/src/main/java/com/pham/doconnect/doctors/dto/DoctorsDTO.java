@@ -1,7 +1,6 @@
 package com.pham.doconnect.doctors.dto;
 
 
-import com.pham.doconnect.doctors.model.Doctors;
 import com.pham.doconnect.doctors.model.Specialize;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,7 +39,7 @@ public class DoctorsDTO {
         this.is_active = is_active;
     }
 
-
     public DoctorsDTO() {
     }
+
 }
