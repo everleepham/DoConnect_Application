@@ -138,4 +138,12 @@ public class DoctorsControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].is_active").value(true));
     }
 
+    @Test
+    public void testFieldSerialization() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/doctors")
+                        .contentType("application/json")
+                        .content("{\"firstName\":\"Test\", \"lastName\":\"User\", \"email\":\"test@user.com\", \"specialize\":\"GENERAL\", \"is_active\":true}"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.is_active").value(true));
+    }
+
 }
